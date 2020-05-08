@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import G6 from '@antv/g6';
-import data from './data'
+import data from './demo'
+import objects from './obj';
+
+console.log(objects)
 
 function App() {
   const refreshDragedNodePosition = (e) => {
@@ -17,6 +20,14 @@ function App() {
       height,
       layout: {
         type: 'force',
+        nodeSize: 10,
+        nodeStrength: 20,
+        edgeStrength: 0.1,
+        // nodeSpacing: (val) => {
+        //   console.log(val)
+        //   return val.size / 2;
+        // },
+        preventOverlap: true,
       },
       defaultNode: {
         size: 15,
@@ -34,10 +45,11 @@ function App() {
     graph.data({
       nodes: data.nodes,
       edges: data.edges.map(function(edge, i) {
-        edge.id = 'edge' + i;
+        edge.id = `${edge.source}->${edge.target}`;
         return Object.assign({}, edge);
       }),
     });
+
     graph.render();
 
     const forceLayout = graph.get('layoutController').layoutMethod;
@@ -53,7 +65,7 @@ function App() {
       e.item.get('model').fx = null;
       e.item.get('model').fy = null;
     });
-    return graph.destroy();
+    return () => graph.destroy();
   })
   return (
     <div className="App">
