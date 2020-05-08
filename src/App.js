@@ -40,6 +40,9 @@ function App() {
       defaultEdge: {
         size: 1,
         color: '#e2e2e2',
+        labelCfg: {
+          autoRotate: true,
+        }
       },
     });
     graph.data({
