@@ -1,8 +1,10 @@
 const color = {
   functionCol: 'green',
-  default: 'purple',
+  defaultCol: 'purple',
   prototypeCol: 'red',
   prototypeDefaultCol: 'pink',
+  getCol: 'yellow',
+  setCol: 'blue'
 }
 
 var objects = [
@@ -15,12 +17,12 @@ var objects = [
   // "decodeURIComponent",
   // "encodeURI",
   // "encodeURIComponent",
-  "Array",
+  // "Array",
   // "Date",
   // "RegExp",
   // "Promise",
   // "Proxy",
-  // "Map",
+  "Map",
   // "WeakMap",
   // "Set",
   // "WeakSet",
@@ -73,6 +75,20 @@ for (let i = 0; i < objects.length; i++) {
     size: name.length * 30,
   })
   
+  if (objects[i].object.__proto__ === Function.__proto__
+    && !objects[i].object.__proto__.constructor) {
+    nodes.push({
+      id: 'Function',
+      label: 'Function',
+      size: 'Function'.length * 30,
+    })
+    edges.push({
+      source: 'Function',
+      target: name,
+      label: `Function.${name}`,
+    })
+  }
+
   for (let key of Object.getOwnPropertyNames(objects[i].object)) {
     console.log('key', key)
     const pro = Object.getOwnPropertyDescriptor(objects[i].object, key)
@@ -95,6 +111,19 @@ for (let i = 0; i < objects.length; i++) {
           target: `${name}.__proto__`,
           label: `${name}.__proto__`,
         })
+        // console.log(typeof pro.value.__proto__.__proto__)
+        // if (pro.value.__proto__ && pro.value.__proto__.__proto__ === Object.__proto__) {
+        //   nodes.push({
+        //     id: 'Object',
+        //     label: 'Object',
+        //     size: 'Object'.length * 30,
+        //   })
+        //   edges.push({
+        //     source: 'Object',
+        //     target: name,
+        //     label: `Object.${name}`,
+        //   })
+        // }
         // console.log(Object.getOwnPropertyNames(pro.value))
         Object.getOwnPropertyNames(pro.value).forEach(val => {
           let isFunction;
@@ -129,7 +158,21 @@ for (let i = 0; i < objects.length; i++) {
       //   path: cur.path.concat([key]),
       //   object: pro.get,
       // })
-      console.log('get', pro.get)
+      console.log('get', pro.get.name)
+      console.dir(pro.get)
+      nodes.push({
+        id: `${name}.${pro.get.name}`,
+        label: `${name}.${pro.get.name}`,
+        size: `${name}.${pro.get.name}`.length * 10,
+        style: {
+          fill: color.getCol,
+        },
+      })
+      edges.push({
+        source: `${name}`,
+        target: `${name}.${pro.get.name}`,
+        label: `${name}.${pro.get.name}`,
+      })
     } else if (pro.hasOwnProperty("set") && (typeof pro.set === "function")) {
       // objects.push({
       //   path: cur.path.concat([key]),
@@ -137,7 +180,6 @@ for (let i = 0; i < objects.length; i++) {
       // })
       console.log('set', pro.set)
     } else {
-      console.log(objects[i].object[key])
       let isFunction;
       try {
         isFunction = typeof objects[i].object[key] === 'function'
@@ -145,35 +187,19 @@ for (let i = 0; i < objects.length; i++) {
         console.log(error)
         isFunction = false
       }
-      if (isFunction) {
-        nodes.push({
-          id: `${name}.${key}`,
-          label: key,
-          size: key.length * 15,
-          style: {
-            fill: color.functionCol,
-          },
-        })
-        edges.push({
-          source: name,
-          target: `${name}.${key}`,
-          label: `${name}`,
-        })
-      } else {
-        nodes.push({
-          id: `${name}.${key}`,
-          label: key,
-          size: key.length * 15,
-          style: {
-            fill: color.default,
-          },
-        })
-        edges.push({
-          source: name,
-          target: `${name}.${key}`,
-          label: `${name}`,
-        })
-      }
+      nodes.push({
+        id: `${name}.${key}`,
+        label: key,
+        size: key.length * 15,
+        style: {
+          fill:  isFunction? color.functionCol : color.defaultCol,
+        },
+      })
+      edges.push({
+        source: name,
+        target: `${name}.${key}`,
+        label: `${name}.${key}`,
+      })
     }
   }
 }
