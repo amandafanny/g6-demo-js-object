@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import G6 from '@antv/g6';
-import data from './demo'
-import objects from './obj';
-
-console.log(objects)
+import data from './obj';
+console.log(data)
 
 function App() {
   const refreshDragedNodePosition = (e) => {
@@ -21,12 +19,12 @@ function App() {
       layout: {
         type: 'force',
         nodeSize: 10,
-        nodeStrength: 20,
+        nodeStrength: 10,
         edgeStrength: 0.1,
-        // nodeSpacing: (val) => {
-        //   console.log(val)
-        //   return val.size / 2;
-        // },
+        nodeSpacing: (val) => {
+          // console.log(val)
+          return val.size / 2;
+        },
         preventOverlap: true,
       },
       defaultNode: {
@@ -69,7 +67,7 @@ function App() {
       e.item.get('model').fy = null;
     });
     return () => graph.destroy();
-  })
+  }, [])
   return (
     <div className="App">
       <div id="container" />

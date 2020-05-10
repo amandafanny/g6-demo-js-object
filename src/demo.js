@@ -3,17 +3,17 @@ export default {
     {
       id: 'node1',
       label: 'node1',
-      size: 5 * 9,
+      size: 5 * 10,
     },
     {
       id: 'node2',
       label: 'node2',
-      size: 5 * 9,
+      size: 5 * 10,
     },
     {
       id: 'node3',
       label: 'node3',
-      size: 5 * 9,
+      size: 5 * 10,
     },
   ],
   edges: [
