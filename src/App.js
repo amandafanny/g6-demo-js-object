@@ -10,8 +10,9 @@ function App() {
     model.fy = e.y;
   }
   useEffect(() => {
-    const width = document.getElementById('container').scrollWidth;
-    const height = document.getElementById('container').scrollHeight || 500;
+    const width = document.getElementById('container').scrollWidth - 16;
+    const height = document.getElementById('container').scrollHeight || 900;
+    console.log(width, height)
     const graph = new G6.Graph({
       container: 'container',
       width,

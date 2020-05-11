@@ -1,8 +1,9 @@
 const color = {
   functionCol: 'green',
-  defaultCol: 'purple',
+  defaultCol: 'grey',
   prototypeCol: 'red',
   prototypeDefaultCol: 'pink',
+  prototypeFunctionCol: 'orange',
   getCol: 'yellow',
   setCol: 'blue'
 }
@@ -17,12 +18,12 @@ var objects = [
   // "decodeURIComponent",
   // "encodeURI",
   // "encodeURIComponent",
-  // "Array",
+  "Array",
   // "Date",
   // "RegExp",
   // "Promise",
   // "Proxy",
-  "Map",
+  // "Map",
   // "WeakMap",
   // "Set",
   // "WeakSet",
@@ -127,19 +128,17 @@ for (let i = 0; i < objects.length; i++) {
         // console.log(Object.getOwnPropertyNames(pro.value))
         Object.getOwnPropertyNames(pro.value).forEach(val => {
           let isFunction;
+          let hasErr = false
           try {
             isFunction = typeof pro.value[val] === 'function'
           } catch (error) {
-            console.log(error)
-            isFunction = false
-          }
-          if (isFunction) {
+            console.log(val, error)
             nodes.push({
               id: `${name}.__proto__.${val}`,
               label: val,
               size: val.length * 10,
               style: {
-                fill: color.prototypeDefaultCol,
+                fill: color.prototypeFunctionCol,
               },
             })
             edges.push({
@@ -147,8 +146,22 @@ for (let i = 0; i < objects.length; i++) {
               target: `${name}.__proto__.${val}`,
               label: `${name}.__proto__.${val}`,
             })
-          } else {
-            console.log('val', val)
+            hasErr = true
+          }
+          if (!hasErr) {
+            nodes.push({
+              id: `${name}.__proto__.${val}`,
+              label: val,
+              size: val.length * 10,
+              style: {
+                fill:isFunction ? color.prototypeDefaultCol : color.prototypeFunctionCol,
+              },
+            })
+            edges.push({
+              source: `${name}.__proto__`,
+              target: `${name}.__proto__.${val}`,
+              label: `${name}.__proto__.${val}`,
+            })
           }
         })
       }
